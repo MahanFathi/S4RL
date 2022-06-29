@@ -3,6 +3,7 @@ import pickle
 import numpy as np
 from torch.utils import data
 from ml_collections import FrozenConfigDict
+from dataset.util import NumpyLoader
 
 
 class D4RLTrajectoryDataset(data.Dataset):
@@ -74,7 +75,7 @@ class D4RLTrajectoryDataset(data.Dataset):
                 np.zeros(padding_len, dtype=np.float)
             ])
 
-        return  states, actions, traj_mask # pure imitation task
+        return states, actions, traj_mask # pure imitation task
 
 
 def get_d4lr_dataset_dataloader(cfg: FrozenConfigDict):
@@ -88,7 +89,7 @@ def get_d4lr_dataset_dataloader(cfg: FrozenConfigDict):
     batch_size = cfg.TRAIN.BATCH_SIZE
 
     dataset = D4RLTrajectoryDataset(cfg, dataset_path)
-    dataloader = data.DataLoader(
+    dataloader = NumpyLoader(
         dataset, batch_size=batch_size, shuffle=True,
     )
 

@@ -20,7 +20,8 @@ _C.ENV.ENV_NAME = "walker2d"
 # Dataset
 # ---------------------------------------------------------------------------- #
 _C.DATA = ml_collections.ConfigDict()
-_C.DATA.DS_NAME = ml_collections.ConfigDict()
+_C.DATA.DS_NAME = "d4rl/medium"
+#   d4rl from [medium, medium-replay, medium-expert]
 
 # ---------------------------------------------------------------------------- #
 # Model
@@ -31,12 +32,15 @@ _C.MODEL.SSM_N = 16
 _C.MODEL.D_MODEL = 16
 _C.MODEL.N_LAYERS = 16
 _C.MODEL.DROPOUT = 0.2
+_C.MODEL.SEQ_LEN = 1000
 
 # ---------------------------------------------------------------------------- #
 # Training
 # ---------------------------------------------------------------------------- #
 _C.TRAIN = ml_collections.ConfigDict()
+_C.TRAIN.EPOCHS = 100
 _C.TRAIN.BATCH_SIZE = 256
+_C.TRAIN.SCHEDULE_LR = True
 
 # ---------------------------------------------------------------------------- #
 # DEFAULT CONFIG

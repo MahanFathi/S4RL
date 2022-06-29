@@ -55,7 +55,8 @@ class StackedModel(nn.Module):
         if self.classification:
             x = jnp.mean(x, axis=0)
         x = self.decoder(x)
-        return nn.log_softmax(x, axis=-1)
+        # return nn.log_softmax(x, axis=-1)
+        return x # for continuous prediction
 
 
 BatchStackedModel = nn.vmap(

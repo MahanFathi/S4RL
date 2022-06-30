@@ -28,8 +28,8 @@ _C.DATA.DS_NAME = "d4rl/medium"
 # ---------------------------------------------------------------------------- #
 _C.MODEL = ml_collections.ConfigDict()
 _C.MODEL.MODEL_NAME = "S4"
-_C.MODEL.SSM_N = 16
-_C.MODEL.D_MODEL = 16
+_C.MODEL.SSM_N = 32
+_C.MODEL.D_MODEL = 64
 _C.MODEL.N_LAYERS = 16
 _C.MODEL.DROPOUT = 0.2
 _C.MODEL.SEQ_LEN = 1000
@@ -38,10 +38,10 @@ _C.MODEL.SEQ_LEN = 1000
 # Training
 # ---------------------------------------------------------------------------- #
 _C.TRAIN = ml_collections.ConfigDict()
-_C.TRAIN.EPOCHS = 100
+_C.TRAIN.EPOCHS = 10000
 _C.TRAIN.BATCH_SIZE = 256
 _C.TRAIN.LR = 1e-3
-_C.TRAIN.SCHEDULE_LR = True
+_C.TRAIN.LR_SCHEDULE = True
 
 # ---------------------------------------------------------------------------- #
 # DEFAULT CONFIG

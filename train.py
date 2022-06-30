@@ -109,7 +109,7 @@ def train_step(
             rngs={"dropout": key},
             mutable=["intermediates"],
         )
-        loss = jnp.mean(jnp.linalg.norm(predictions - actions) * masks)
+        loss = jnp.mean(jnp.linalg.norm(predictions - actions, axis=-1) * masks)
         return loss
 
     grad_fn = jax.value_and_grad(loss_fn)

@@ -51,7 +51,7 @@ class StackedModel(nn.Module):
     def __call__(self, x, training=True):
         x = self.encoder(x)
         for layer in self.layers:
-            x = layer(x, not training)
+            x = layer(x, training)
         if self.classification:
             x = jnp.mean(x, axis=0)
         x = self.decoder(x)

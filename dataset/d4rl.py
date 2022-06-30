@@ -26,7 +26,7 @@ class D4RLTrajectoryDataset(data.Dataset):
         for traj in self.trajectories:
             traj_len = traj['observations'].shape[0]
             states.append(traj['observations'])
-            states.append(traj['actions'])
+            actions.append(traj['actions'])
 
         # used for input normalization
         states = np.concatenate(states, axis=0)

@@ -37,7 +37,7 @@ def main(argv):
     def progress_fn(num_steps: int, metrics: Mapping[str, Union[int, float]]):
         logger.log_metrics(cfg, num_steps, metrics)
 
-    train(cfg progress_fn)
+    train(cfg, progress_fn)
     wandb.finish()
 
 

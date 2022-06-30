@@ -14,6 +14,8 @@ from ml_collections.config_flags import config_flags
 from model import create_model
 from util import logger
 
+from train import train
+
 
 _CONFIG = config_flags.DEFINE_config_file('cfg', './config/defaults.py')
 

@@ -1,4 +1,5 @@
 from typing import Any, Callable, Optional, Tuple, Mapping
+from functools import partial
 import jax
 from jax import numpy as jnp
 import flax
@@ -35,19 +36,20 @@ def create_train_state_and_model(
 
     sample_state, sample_action, _ = next(iter(dataloader))
     batch_size, seq_len, in_dim = sample_state.shape
-    batch_size, seq_len, out_dim = action_state.shape
+    batch_size, seq_len, out_dim = sample_action.shape
 
     model = create_model(cfg, out_dim, seq_len)
 
     key_init, key_dropout = jax.random.split(key, num=2)
     params = model.init(
         {"params": key_init, "dropout": key_dropout},
-        jnp.ones((bsz, seq_len, in_dim)),
+        jnp.ones((batch_size, seq_len, in_dim)),
     )[
         "params"
     ].unfreeze()  # Note: Added immediate `unfreeze()` to play well w/ Optax. See below!
 
     lr = cfg.TRAIN.LR
+    lr_schedule = cfg.TRAIN.LR_SCHEDULE
 
     # Implement LR Schedule (No change for first 30% of training, then decay w/ cubic polynomial to 0 for last 70%)
     if lr_schedule:
@@ -58,6 +60,8 @@ def create_train_state_and_model(
             transition_begin=int(0.3 * total_steps),
             transition_steps=int(0.7 * total_steps),
         )
+
+    model_name = cfg.MODEL.MODEL_NAME
 
     # # S4 uses a Fixed LR = 1e-3 with NO weight decay for the S4 Matrices, higher LR elsewhere
     if "s4" in model_name or "dss" in model_name:
@@ -108,7 +112,7 @@ def train_step(
         loss = jnp.mean(jnp.linalg.norm(predictions - actions) * masks)
         return loss
 
-    grad_fn = jax.value_and_grad(loss_fn, has_aux=True)
+    grad_fn = jax.value_and_grad(loss_fn)
     loss, grads = grad_fn(train_state.params)
     train_state = train_state.apply_gradients(grads=grads)
     return train_state, loss
@@ -117,7 +121,7 @@ def train_step(
 def train_epoch(train_state, model, key, trainloader):
     # Store Metrics
     batch_losses = []
-    for batch_idx, (states, actions, masks) in enumerate(tqdm(trainloader)):
+    for batch_idx, (states, actions, masks) in enumerate(trainloader):
         states = jnp.array(states)
         actions = jnp.array(actions)
         masks = jnp.array(masks)
@@ -143,7 +147,7 @@ def train(
     seed = cfg.SEED
     set_seed(seed) # torch and python
     key = jax.random.PRNGKey(seed)
-    key, key_model, key_train = jax.random.split(key)
+    key, key_model, key_train = jax.random.split(key, 3)
 
     epochs = cfg.TRAIN.EPOCHS
 

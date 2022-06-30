@@ -22,17 +22,22 @@ class D4RLTrajectoryDataset(data.Dataset):
         # calculate min len of traj, state mean and variance
         # and returns_to_go for all traj
         states = []
+        actions = []
         for traj in self.trajectories:
             traj_len = traj['observations'].shape[0]
             states.append(traj['observations'])
+            states.append(traj['actions'])
 
         # used for input normalization
         states = np.concatenate(states, axis=0)
+        actions = np.concatenate(actions, axis=0)
         self.state_mean, self.state_std = np.mean(states, axis=0), np.std(states, axis=0) + 1e-6
+        self.action_mean, self.action_std = np.mean(actions, axis=0), np.std(actions, axis=0) + 1e-6
 
         # normalize states
         for traj in self.trajectories:
             traj['observations'] = (traj['observations'] - self.state_mean) / self.state_std
+            traj['actions'] = (traj['actions'] - self.action_mean) / self.action_std
 
     def get_state_stats(self):
         return self.state_mean, self.state_std

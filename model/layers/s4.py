@@ -13,7 +13,7 @@ class S4(nn.Module):
     q: jnp.DeviceArray
     Lambda: jnp.DeviceArray
     N: int
-    l_max: int
+    seq_len: int
     decode: bool = False
 
     def setup(self):
@@ -33,9 +33,9 @@ class S4(nn.Module):
                 self.B,
                 self.Ct,
                 self.step[0],
-                unmat=self.l_max > 1000,
+                unmat=self.seq_len > 1000,
             )
-            self.K = conv_from_gen(K_gen, self.l_max)
+            self.K = conv_from_gen(K_gen, self.seq_len)
 
         else:
             # RNN mode, discretize
@@ -49,7 +49,7 @@ class S4(nn.Module):
                     self.B,
                     self.Ct,
                     self.step[0],
-                    self.l_max,
+                    self.seq_len,
                 )
 
             ssm_var = self.variable("prime", "ssm", init_discrete)

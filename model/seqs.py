@@ -6,13 +6,13 @@ from flax import linen as nn
 
 class SequenceBlock(nn.Module):
     layer: nn.Module
-    l_max: int
+    seq_len: int
     dropout: float
     d_model: int
     decode: bool = False
 
     def setup(self):
-        self.seq = self.layer(l_max=self.l_max, decode=self.decode)
+        self.seq = self.layer(seq_len=self.seq_len, decode=self.decode)
         self.norm = nn.LayerNorm()
         self.out = nn.Dense(self.d_model)
         self.drop = nn.Dropout(self.dropout, broadcast_dims=[0])
@@ -28,7 +28,7 @@ class StackedModel(nn.Module):
     layer: nn.Module
     d_output: int
     d_model: int
-    l_max: int
+    seq_len: int
     n_layers: int
     dropout: float = 0.2
     classification: bool = False
@@ -42,7 +42,7 @@ class StackedModel(nn.Module):
                 layer=self.layer,
                 d_model=self.d_model,
                 dropout=self.dropout,
-                l_max=self.l_max,
+                seq_len=self.seq_len,
                 decode=self.decode,
             )
             for _ in range(self.n_layers)

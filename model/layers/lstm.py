@@ -3,7 +3,7 @@ from flax import linen as nn
 
 class LSTM(nn.Module):
     d_model: int
-    l_max: int
+    seq_len: int
 
     def setup(self):
         LSTM = nn.scan(

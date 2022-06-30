@@ -2,7 +2,7 @@ from flax import linen as nn
 
 class FF(nn.Module):
     d_model: int
-    l_max: int
+    seq_len: int
 
     def setup(self):
         self.dense = nn.Dense(self.d_model)

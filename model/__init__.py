@@ -7,7 +7,7 @@ def get_layer_cls(name: str, N: int):
     return globals()[name + "Init"](N)
 
 
-def creat_model(
+def create_model(
         cfg: FrozenConfigDict,
         d_output: int,
         seq_len: int,
@@ -19,14 +19,13 @@ def creat_model(
     d_model = cfg.MODEL.D_MODEL
     n_layers = cfg.MODEL.N_LAYERS
     dropout = cfg.MODEL.DROPOUT
-    l_max = seq_len if classification else seq_len - 1
 
     layer = get_layer_cls(name, N)
     return BatchStackedModel(
         layer=layer,
         d_output=d_output,
         d_model=d_model,
-        l_max=l_max,
+        seq_len=seq_len,
         n_layers=n_layers,
         dropout=dropout,
         decode=decode,

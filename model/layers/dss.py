@@ -9,7 +9,7 @@ from model.util import *
 class DSS(nn.Module):
     Lambda: jnp.DeviceArray
     N: int
-    l_max: int
+    seq_len: int
     decode: bool = False
 
     def setup(self):
@@ -21,11 +21,11 @@ class DSS(nn.Module):
             self.param("log_step", log_step_initializer(), (1,))
         )
         if not self.decode:
-            self.K = dss_kernel(self.W, self.Lambda, self.l_max, self.step)
+            self.K = dss_kernel(self.W, self.Lambda, self.seq_len, self.step)
         else:
             # FLAX code to ensure that we only compute discrete once during decoding.
             def init_discrete():
-                return dss_ssm(self.W, self.Lambda, self.l_max, self.step)
+                return dss_ssm(self.W, self.Lambda, self.seq_len, self.step)
             ssm_var = self.variable("prime", "ssm", init_discrete)
             if self.is_mutable_collection("prime"):
                 ssm_var.value = init_discrete()

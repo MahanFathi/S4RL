@@ -40,6 +40,7 @@ _C.MODEL.SEQ_LEN = 1000
 _C.TRAIN = ml_collections.ConfigDict()
 _C.TRAIN.EPOCHS = 100
 _C.TRAIN.BATCH_SIZE = 256
+_C.TRAIN.LR = 1e-3
 _C.TRAIN.SCHEDULE_LR = True
 
 # ---------------------------------------------------------------------------- #

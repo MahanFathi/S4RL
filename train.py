@@ -160,7 +160,7 @@ def train(
     for epoch in range(epochs):
         print(f"[*] Starting Training Epoch {epoch + 1}...")
         key_train = jax.random.fold_in(key_train, epoch)
-        state, train_loss = train_epoch(
+        train_state, train_loss = train_epoch(
             train_state, model, key_train, dataloader)
 
         metrics = {
